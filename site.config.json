@@ -1,0 +1,13 @@
+{
+  "description": "Explore a designer and front-end developer’s interactive portfolio of branding, graphic design, UI/UX, and web projects, with professional insights into their skills and experience.",
+  "icons": {
+    "icon": "/atiag-portrait.webp"
+  },
+  "robots": {
+    "index": true
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
