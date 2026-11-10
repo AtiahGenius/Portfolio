@@ -221,13 +221,13 @@ function getRoutePath() {
 }
 
 const experience = [
-  ["2025 — 2026", "Product & UI/UX Lead, Co-Founder", "Qoderaven"],
-  ["2025 — 2026", "Head of Product Design", "Algorithmic Explorers"],
+  ["2026", "Product & UI/UX Lead", "Qoderaven"],
+  ["2025", "Head of Product Design", "Algorithmic Explorers"],
   ["2025", "UI/UX & IT Intern", "TGTS Africa"],
-  ["2025", "UI/UX & IT Intern", "3S Spring"],
-  ["2024 — 2025", "Supervisor & Senior Graphic Designer", "Leofat Ghana"],
-  ["2023 — 2024", "Director of IT", "Africa Institute of Mines & Safety"],
-  ["2021 — 2022", "UI/UX Designer", "Nepptek Ghana"],
+  ["2025", "UI/UX Intern", "3S Spring"],
+  ["2024", "Supervisor & Senior Graphic Designer", "Leofat Ghana"],
+  ["2023", "Director of IT", "Africa Institute of Mines & Safety"],
+  ["2021", "UI/UX Designer", "Nepptek Ghana"],
 ]
 
 function Arrow({ className = "" }: { className?: string }) {
@@ -372,6 +372,11 @@ function ServiceDetailPage({
 }
 
 export default function App() {
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light"
+  })
   const [loaderVisible, setLoaderVisible] = useState(
     () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   )
@@ -384,6 +389,8 @@ export default function App() {
   const [showAll, setShowAll] = useState(false)
   const [currentPath, setCurrentPath] = useState(getRoutePath)
   const previousPath = useRef(currentPath)
+  const menuRef = useRef<HTMLElement>(null)
+  const projectDialogRef = useRef<HTMLDivElement>(null)
 
   const currentService = services.find(
     (service) => currentPath === `/services/${service.slug}`,
@@ -428,6 +435,23 @@ export default function App() {
     favicon.href = portrait
     favicon.type = "image/webp"
   }, [])
+
+  useEffect(() => {
+    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)")
+    const syncTheme = (event: MediaQueryListEvent) => {
+      setTheme(event.matches ? "dark" : "light")
+    }
+
+    colorScheme.addEventListener("change", syncTheme)
+    return () => colorScheme.removeEventListener("change", syncTheme)
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    document
+      .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      ?.setAttribute("content", theme === "dark" ? "#121416" : "#ffffff")
+  }, [theme])
 
   useEffect(() => {
     if (!loaderVisible) return
@@ -571,6 +595,70 @@ export default function App() {
     }
   }, [menuOpen, activeProject, loaderVisible])
 
+  useEffect(() => {
+    if (!menuOpen || !menuRef.current) return
+
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null
+    menuRef.current.querySelector<HTMLElement>("button")?.focus()
+
+    return () => {
+      if (previouslyFocused?.isConnected) previouslyFocused.focus()
+    }
+  }, [menuOpen])
+
+  useEffect(() => {
+    if (!activeProject || !projectDialogRef.current) return
+
+    const dialog = projectDialogRef.current
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null
+    const focusableElements = () =>
+      Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])',
+        ),
+      )
+
+    dialog.querySelector<HTMLElement>(".modal-close")?.focus()
+
+    const keepFocusInDialog = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return
+      const focusable = focusableElements()
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (!first || !last) {
+        event.preventDefault()
+        dialog.focus()
+      } else if (
+        event.shiftKey &&
+        (document.activeElement === first ||
+          !dialog.contains(document.activeElement))
+      ) {
+        event.preventDefault()
+        last.focus()
+      } else if (
+        !event.shiftKey &&
+        (document.activeElement === last ||
+          !dialog.contains(document.activeElement))
+      ) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", keepFocusInDialog)
+    return () => {
+      document.removeEventListener("keydown", keepFocusInDialog)
+      if (previouslyFocused?.isConnected) previouslyFocused.focus()
+    }
+  }, [activeProject])
+
   const closeAndGo = (id: string) => {
     setMenuOpen(false)
     if (isServicePage) {
@@ -629,7 +717,6 @@ export default function App() {
             Service
           </a>
           <a href={isServicePage ? `${import.meta.env.BASE_URL}#experience` : "#experience"} onClick={navigateTo}>Experience</a>
-          <a href={isServicePage ? `${import.meta.env.BASE_URL}#contact` : "#contact"} onClick={navigateTo}>Contact</a>
         </nav>
         <div className="header-right">
           <a className="nav-cta" href={isServicePage ? `${import.meta.env.BASE_URL}#contact` : "#contact"} onClick={navigateTo}>
@@ -650,8 +737,10 @@ export default function App() {
 
       <nav
         id="mobile-menu"
+        ref={menuRef}
         className={`menu-overlay ${menuOpen ? "open" : ""}`}
         aria-hidden={!menuOpen}
+        inert={!menuOpen}
       >
         <div className="menu-top">
           <span>Navigation</span>
@@ -688,8 +777,9 @@ export default function App() {
         <>
       <section className="hero" id="home">
         <div className="hero-grid">
-          <h1 className="hero-name">
-            <span>GENIUZ</span> ATIAH
+          <h1 className="hero-name" aria-label="Geniuz Atiah">
+            <span className="hero-name-gen">GENIUZ</span>
+            <span className="hero-name-atia">ATIAH</span>
           </h1>
           <div className="hero-copy">
             <h2>Product & Visual Designer</h2>
@@ -736,11 +826,7 @@ export default function App() {
             <h2>/SELECTED WORK</h2>
           </div>
           <div className="work-toolbar">
-            <div
-              className="filters"
-              role="tablist"
-              aria-label="Filter projects"
-            >
+            <div className="filters" role="group" aria-label="Filter projects">
               {categories.map((category) => (
                 <button
                   key={category}
@@ -913,9 +999,11 @@ export default function App() {
       {activeProject && (
         <div
           className="project-modal"
+          ref={projectDialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={activeProject.title}
+          tabIndex={-1}
         >
           <button
             className="modal-close"
