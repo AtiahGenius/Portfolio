@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-const portrait = `${import.meta.env.BASE_URL}atiag-portrait.webp`
+const portrait = `${import.meta.env.BASE_URL}hero-photo.png`
 
 type Project = {
   title: string
@@ -10,6 +10,7 @@ type Project = {
   scope: string
   tags: string[]
   description: string
+  designFocus: string
   image: string
   color: string
 }
@@ -25,6 +26,7 @@ const projects: Project[] = [
     tags: ["Product strategy", "UI/UX"],
     description:
       "An anonymous advice platform designed around privacy, accessibility, and low-friction conversation.",
+    designFocus: "Protecting privacy while keeping conversations accessible and easy to start.",
     image: "/images/ui/Anon.png",
     color: "#d9ff43",
   },
@@ -38,8 +40,8 @@ const projects: Project[] = [
     tags: ["Web design", "Front-end"],
     description:
       "A clear, story-led website for IHelp Africa, built to improve the organization's visibility and trust.",
+    designFocus: "Using story-led content structure to support visibility and trust.",
     image: "/images/ui/3.png",
-  
     color: "#e3a76f",
   },
   {
@@ -52,6 +54,7 @@ const projects: Project[] = [
     tags: ["UX flows", "Interface"],
     description:
       "A website for Algorithmic Explorers, a blockchain research company, designed to make complex information clear and actionable.",
+    designFocus: "Making complex blockchain research easier to understand and act on.",
     image: "/images/ui/0.png",
     color: "#c5bbff",
   },
@@ -65,6 +68,7 @@ const projects: Project[] = [
     tags: ["Packaging", "Illustration"],
     description:
       "A warm artisan packaging direction for a fruit juice brand, Didi, with a focus on natural cues and playful illustration.",
+    designFocus: "Combining natural cues and playful illustration for an artisan juice brand.",
     image: "/images/Packaging/Didi.png",
     color: "#ff9c74",
   },
@@ -78,6 +82,7 @@ const projects: Project[] = [
     tags: ["Identity", "Logo system"],
     description:
       "A complete visual identity concept for a wellness brand, balancing natural cues with a precise modern system.",
+    designFocus: "Balancing natural cues with a precise, modern wellness identity.",
     image: "/images/Brand%20&%20Logos/MomBro.jpg",
     color: "#9ed5a3",
   },
@@ -91,6 +96,7 @@ const projects: Project[] = [
     tags: ["Editorial", "Typography"],
     description:
       "Book design and layout for a church publication, Clothed with power, with a focus on typographic hierarchy and clear information flow.",
+    designFocus: "Building typographic hierarchy and clear information flow for a church publication.",
     image: "/images/Packaging/CWPF.png",
     color: "#f1dfcd",
   },
@@ -104,6 +110,7 @@ const projects: Project[] = [
     tags: ["Campaign", "Print"],
     description:
       "Logo and flyer design for a football club, Area Boyz FC, with a bold, energetic visual identity.",
+    designFocus: "Carrying a bold, energetic identity across the club logo and flyer.",
     image: "/images/flyers/Area%20Boyz%20FC.jpg",
     color: "#ffbcf0",
   },
@@ -117,6 +124,7 @@ const projects: Project[] = [
     tags: ["Social media", "Templates"],
     description:
       "A social content system for the Geniuz Atiah personal brand, focused on bold typography and clear visual hierarchy.",
+    designFocus: "Using bold typography and clear hierarchy across personal-brand content.",
     image: "/images/flyers/Geniuz%20Atiah.png",
     color: "#a7d49b",
   },
@@ -162,7 +170,7 @@ const services: Service[] = [
       { title: "Prototype", description: "Explore visual directions and test key interactions." },
       { title: "Refine", description: "Polish details, states, and handoff documentation." },
     ],
-    projectTitles: ["Anon", "CRM Sales System"],
+    projectTitles: ["Anon", "Algorithmic Explorers"],
   },
   {
     slug: "brand-graphic-design",
@@ -184,7 +192,7 @@ const services: Service[] = [
       { title: "Systemize", description: "Turn the chosen direction into a usable design system." },
       { title: "Deliver", description: "Prepare final artwork and guidance for real-world use." },
     ],
-    projectTitles: ["Noon Kitchen", "Verdant", "Amplify Festival"],
+    projectTitles: ["Didi", "MomBro", "CWPF", "FC", "Geniuz"],
   },
   {
     slug: "front-end-development",
@@ -206,7 +214,7 @@ const services: Service[] = [
       { title: "Validate", description: "Check behavior, responsive layouts, and accessibility details." },
       { title: "Ship", description: "Polish the final experience and prepare it for handoff or launch." },
     ],
-    projectTitles: ["Kukuom Cocoa", "Urban Jungle"],
+    projectTitles: ["IHelp Africa", "Algorithmic Explorers"],
   },
 ]
 
@@ -687,7 +695,7 @@ export default function App() {
           aria-label="Loading GeniuzTek portfolio"
         >
           <div className="loader-wordmark" aria-hidden="true">
-            {Array.from("GeniuzTek", (letter, index) => (
+            {Array.from("Geniuz Atiah", (letter, index) => (
               <span key={`${letter}-${index}`} style={{ animationDelay: `${index * 65}ms` }}>
                 {letter}
               </span>
@@ -696,7 +704,7 @@ export default function App() {
           <div className="loader-progress" aria-hidden="true">
             <i />
           </div>
-          <p>DESIGN · TECHNOLOGY · EXPERIENCE</p>
+          <p>PRODUCT · VISUAL · FRONT-END</p>
         </div>
       )}
       <main aria-hidden={loaderVisible} inert={loaderVisible}>
@@ -990,7 +998,7 @@ export default function App() {
 
       <footer>
         <span>© 2026 Geniuz Atiah</span>
-        <span>Designed & built with intention</span>
+        <span>Portfolio of Geniuz Atiah</span>
         <a href="#home">Back to top ↑</a>
       </footer>
         </>
@@ -1033,6 +1041,10 @@ export default function App() {
                 <dd>{activeProject.scope}</dd>
               </div>
             </dl>
+            <section className="project-focus" aria-labelledby="project-focus-title">
+              <h3 id="project-focus-title">Design focus</h3>
+              <p>{activeProject.designFocus}</p>
+            </section>
             <div className="tag-row">
               {activeProject.tags.map((tag) => (
                 <span key={tag}>{tag}</span>

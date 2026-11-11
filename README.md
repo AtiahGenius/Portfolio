@@ -22,6 +22,7 @@ pnpm preview
 ```
 
 Run `pnpm format` to format the project.
+Run `pnpm check` to verify project references and public image assets.
 
 ## Update content
 
@@ -32,8 +33,6 @@ Run `pnpm format` to format the project.
 - Service detail routes are `/services/product-ui-ux`, `/services/brand-graphic-design`, and `/services/front-end-development`.
 - `src/index.css` contains layout, responsive, and animation styles.
 
-## Site settings and Figma tooling
+## Site metadata
 
-`site.config.json` supplies the site description, favicon, indexing behavior, and accessibility settings used by `vite.config.ts`.
-
-The `.figma/` workflow directory has been removed. This removes its saved Figma Make and Code Layers workflow configuration; the Vite config still contains its development plugins and virtual Make preview route.
+The page title, description, language, and theme color are configured in `index.html`.
